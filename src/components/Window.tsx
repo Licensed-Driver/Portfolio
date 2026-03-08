@@ -43,7 +43,7 @@ export function Window({
   const [maxDims, setMaxDims] = useState({width: 0, height: 0});
 
   const start = useRef({ w: 0, h: 0, l: 0, t: 0 });
-  const posMem = useRef({ w: 0, h: 0, l: 0, t: 0 })
+  const posMem = useRef({ w: 850, h: 600, l: 20, t: 20 });
 
   useLayoutEffect(() => {
     if (!desktopRef.current) return;

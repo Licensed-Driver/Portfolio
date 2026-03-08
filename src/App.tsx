@@ -75,13 +75,16 @@ function App() {
       window.portfolioOS = emulator;
       emulatorRef.current = emulator;
     };
-
+    
+    // Some checks to hopefully handle the window loading properly since the website isn't like mounting the windows properly
     if (document.readyState === "complete") {
       initLinux();
     } else {
       window.addEventListener("load", initLinux);
       return () => window.removeEventListener("load", initLinux);
     }
+
+    // Since we tie it to the window we ain't gonna return here since we don't wanna destroy
   }, []);
 
   // Basically just pick out the window we want and set it to opened or not opened, or minimized or maximized or whatever for all these
