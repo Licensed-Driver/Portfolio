@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { Terminal as TerminalIcon, Folder, User, FileText, Github, ExternalLink } from 'lucide-react';
 import { Window } from './components/Window';
 import { DesktopItem } from './components/DesktopItem';
@@ -19,8 +19,6 @@ export interface WebPageData {
 
 function App() {
   // For setting up windows that can be created from inside other windows since we won't know they need to be openeed at startup
-  const [dynamicWindows, setDynamicWindows] = useState<Record<string, WebPageData>>({});
-
   const [windows, setWindows] = useState<WindowState[]>([
     { id: 'about', title: 'About.me', isOpen: false, isMinimized: false, isMaximized: false, zIndex: 10 },
     { id: 'projects', title: 'Projects', isOpen: false, isMinimized: false, isMaximized: false, zIndex: 10 },

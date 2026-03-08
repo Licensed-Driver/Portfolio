@@ -142,73 +142,73 @@ export function Window({
     >
       {/* Right Edge */}
       <motion.div className="absolute right-0 top-0 bottom-0 w-2 cursor-e-resize z-50 select-none"
-        onPan={(e, info) => {
+        onPan={(_e, info) => {
           setWindow(0, info.offset.x, 0, 0)
         }}
-        onPanStart={(e, info) => {
+        onPanStart={() => {
           handlePanStart()
         }}
       />
       {/* Bottom Edge */}
       <motion.div className="absolute bottom-0 left-0 right-0 h-2 cursor-s-resize z-50 select-none"
-        onPan={(e, info) => {
+        onPan={(_, info) => {
           setWindow(0, 0, 0, info.offset.y)
         }}
-        onPanStart={(e, info) => {
+        onPanStart={() => {
           handlePanStart()
         }}
       />
       {/* Bottom-Right Corner */}
       <motion.div className="absolute right-0 bottom-0 w-4 h-4 cursor-se-resize z-50 select-none"
-        onPan={(e, info) => {
+        onPan={(_, info) => {
           setWindow(0, info.offset.x, 0, info.offset.y)
         }}
-        onPanStart={(e, info) => {
+        onPanStart={() => {
           handlePanStart()
         }}
       />
       {/* Left Edge */}
       <motion.div className='absolute left-0 top-0 bottom-0 w-2 cursor-e-resize z-50 select-none'
-        onPan={(e, info) => {
+        onPan={(_, info) => {
           setWindow(info.offset.x, 0, 0, 0)
         }}
-        onPanStart={(e, info) => {
+        onPanStart={() => {
           handlePanStart()
         }}
       />
       {/* Bottom-Left Corner */}
       <motion.div className="absolute left-0 bottom-0 w-4 h-4 cursor-sw-resize z-50 select-none"
-        onPan={(e, info) => {
+        onPan={(_, info) => {
           setWindow(info.offset.x, 0, 0, info.offset.y)
         }}
-        onPanStart={(e, info) => {
+        onPanStart={() => {
           handlePanStart()
         }}
       />
       {/* Top Edge */}
       <motion.div className="absolute top-0 left-0 right-0 h-2 cursor-s-resize z-50 select-none"
-        onPan={(e, info) => {
+        onPan={(_, info) => {
           setWindow(0, 0, info.offset.y, 0)
         }}
-        onPanStart={(e, info) => {
+        onPanStart={() => {
           handlePanStart()
         }}
       />
       {/* Top-Left Corner */}
       <motion.div className="absolute left-0 top-0 w-4 h-4 cursor-se-resize z-50 select-none"
-        onPan={(e, info) => {
+        onPan={(_, info) => {
           setWindow(info.offset.x, 0, info.offset.y, 0)
         }}
-        onPanStart={(e, info) => {
+        onPanStart={() => {
           handlePanStart()
         }}
       />
       {/* Top-Right Corner */}
       <motion.div className="absolute right-0 top-0 w-4 h-4 cursor-sw-resize z-50 select-none"
-        onPan={(e, info) => {
+        onPan={(_, info) => {
           setWindow(0, info.offset.x, info.offset.y, 0)
         }}
-        onPanStart={(e, info) => {
+        onPanStart={() => {
           handlePanStart()
         }}
       />
