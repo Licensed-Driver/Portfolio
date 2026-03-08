@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useMemo } from 'react';
 import { motion, useMotionValue, useDragControls } from 'framer-motion';
 import { X, Minus, Square } from 'lucide-react';
 import { useIsMobile } from '../hooks/useIsMobile';
@@ -61,7 +61,7 @@ export function Window({
   }
 
   // To make sure that if someone is testing mobile compatability, all values are updated properly without requiring a reload
-  useEffect(() => {
+  useMemo(() => {
     setMinDims(getMinDims);
     setMaxDims(getMaxDims);
     updateDims();
