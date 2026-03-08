@@ -30,7 +30,6 @@ export function Window({
   children,
   desktopRef
 }: WindowProps) {
-  if (!isOpen) return null;
 
   const width = useMotionValue(850);
   const height = useMotionValue(600);
@@ -83,6 +82,8 @@ export function Window({
   }, [isMaximized])
 
   // Set the initial window positions
+  if (!isOpen) return null;
+
   const handlePanStart = () => {
     if(isMaximized) return;
     start.current = {

@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { Terminal as TerminalIcon, Folder, User, FileText, Github, ExternalLink } from 'lucide-react';
 import { Window } from './components/Window';
 import { DesktopItem } from './components/DesktopItem';
@@ -33,50 +33,56 @@ function App() {
   const emulatorRef = useRef<any>(null);
 
   // We boot up linux when the page loads but keep it in the background so that the linux instance is persistent and doesn't restart with the terminal window
-  window.onload = function () {
-
-    // Make the emulator a singleton since we want persistance so we tie it to the window
-    // @ts-ignore
-    if(window.portfolioOS) {
+  useEffect(() => {
+    const initLinux = () => {
+      // Make the emulator a singleton since we want persistance so we tie it to the window
       // @ts-ignore
-      emulatorRef.current = window.portfolioOS;
-      return;
+      if(window.portfolioOS) {
+        // @ts-ignore
+        emulatorRef.current = window.portfolioOS;
+        return;
+      }
+
+      // Browser embedded linux image, thank you Fabian for making literally exactly what I was looking for
+      // @ts-ignore - v86 loads globally
+      const emulator = new window.V86({
+        wasm_path: "/v86/emulator/v86.wasm",
+
+        memory_size: 512 * 1024 * 1024, 
+        vga_memory_size: 8 * 1024 * 1024,
+
+        bios: {
+            url: "/v86/emulator/bios/seabios.bin",
+        },
+        vga_bios: {
+            url: "/v86/emulator/bios/vgabios.bin",
+        },
+        bzimage: { url: "/v86/images/bzImage" }, 
+        hda: { url: "/v86/images/rootfs.ext2" },
+        autostart: true,
+        bzimage_initrd_from_filesystem: true,
+
+        cmdline: "rw root=/dev/sda console=ttyS0",
+
+        disable_keyboard: true,  // Xterm is handling our keystrokes
+        disable_mouse: true // So that it doesn't take over scrolling 
+      });
+
+      // So we don't try to start using it before it's booted
+      emulator.isBooted = true;
+
+      // @ts-ignore
+      window.portfolioOS = emulator;
+      emulatorRef.current = emulator;
+    };
+
+    if (document.readyState === "complete") {
+      initLinux();
+    } else {
+      window.addEventListener("load", initLinux);
+      return () => window.removeEventListener("load", initLinux);
     }
-
-    // Browser embedded linux image, thank you Fabian for making literally exactly what I was looking for
-    // @ts-ignore - v86 loads globally
-    const emulator = new window.V86({
-      wasm_path: "/v86/emulator/v86.wasm",
-
-      memory_size: 512 * 1024 * 1024, 
-      vga_memory_size: 8 * 1024 * 1024,
-
-      bios: {
-          url: "/v86/emulator/bios/seabios.bin",
-      },
-      vga_bios: {
-          url: "/v86/emulator/bios/vgabios.bin",
-      },
-      bzimage: { url: "/v86/images/bzImage" }, 
-      hda: { url: "/v86/images/rootfs.ext2" },
-      autostart: true,
-      bzimage_initrd_from_filesystem: true,
-
-      cmdline: "rw root=/dev/sda console=ttyS0",
-
-      disable_keyboard: true,  // Xterm is handling our keystrokes
-      disable_mouse: true // So that it doesn't take over scrolling 
-    });
-
-    // So we don't try to start using it before it's booted
-    emulator.isBooted = true;
-
-    // @ts-ignore
-    window.portfolioOS = emulator;
-    emulatorRef.current = emulator;
-
-    // Since we tie it to the window we ain't gonna return here since we don't wanna destroy
-  }
+  }, []);
 
   // Basically just pick out the window we want and set it to opened or not opened, or minimized or maximized or whatever for all these
   const openWindow = (id: string) => {
