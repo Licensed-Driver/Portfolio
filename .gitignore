@@ -37,8 +37,3 @@ coverage
 # Firebase Hosting / Tools
 .firebase/
 firebase-debug.log*
-
-# V86 and binary build artifacts (if generating any locally)
-*.wasm
-*.img
-*.iso
