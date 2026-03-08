@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { projects } from '../data/projects';
 import { Folder, ChevronLeft } from 'lucide-react';
 import { Project } from './Project';
+import { useIsMobile } from '../hooks/useIsMobile';
 
 interface FileExplorerProps {
   onOpenWebPage?: (id:string) => void;
@@ -9,6 +10,7 @@ interface FileExplorerProps {
 
 export function FileExplorer({ onOpenWebPage }: FileExplorerProps) {
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
+  const isMobile = useIsMobile();
 
   if (selectedProject) {
     const project = projects.find(p => p.id === selectedProject);
@@ -56,7 +58,8 @@ export function FileExplorer({ onOpenWebPage }: FileExplorerProps) {
             {projects.map((project) => (
               <div 
                 key={project.id}
-                onDoubleClick={() => setSelectedProject(project.id)}
+                onDoubleClick={isMobile ? undefined : () => setSelectedProject(project.id)}
+                onClick={isMobile ? () => setSelectedProject(project.id) : undefined}
                 className="flex flex-col items-center justify-start p-4 rounded-xl hover:bg-black/5 cursor-pointer transition-colors group"
               >
                 <div className="w-20 h-20 bg-blue-50 border border-blue-100 rounded-2xl flex items-center justify-center text-blue-500 mb-3 shadow-sm group-hover:scale-105 transition-transform duration-200">

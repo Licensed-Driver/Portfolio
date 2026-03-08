@@ -1,6 +1,7 @@
-import React, { useEffect, useRef, useState, useLayoutEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { motion, useMotionValue, useDragControls } from 'framer-motion';
 import { X, Minus, Square } from 'lucide-react';
+import { useIsMobile } from '../hooks/useIsMobile';
 
 interface WindowProps {
   id: string;
@@ -28,40 +29,49 @@ export function Window({
   onMaximize,
   onFocus,
   children,
-  desktopRef
 }: WindowProps) {
 
-  const width = useMotionValue(850);
-  const height = useMotionValue(600);
-  const left = useMotionValue(20);
-  const top = useMotionValue(20);
+  const isMobile = useIsMobile();
+
+  const width = useMotionValue(isMobile ? window.innerWidth : 850);
+  const height = useMotionValue(isMobile ? window.innerHeight : 600);
+  const left = useMotionValue(isMobile ? 0 :20);
+  const top = useMotionValue(isMobile ? 0 :20);
 
   const controls = useDragControls();
 
-  const min_w = 850;
-  const min_h = 600;
-  const [maxDims, setMaxDims] = useState({width: 0, height: 0});
+  const [minDims, setMinDims] = useState(isMobile ? {width: window.innerWidth, height: window.innerHeight} : {width: 850, height: 600});
+
+  // Changed from useState to useRef since stale closure was causing zerod out dimensions on maximize
+  const [maxDims, setMaxDims] = useState({width: window.innerWidth, height: window.innerHeight});
 
   const start = useRef({ w: 0, h: 0, l: 0, t: 0 });
-  const posMem = useRef({ w: 850, h: 600, l: 20, t: 20 });
+  const posMem = useRef(isMobile ? { w: window.innerWidth, h: window.innerHeight, l: 0, t: 0 } : { w: 850, h: 600, l: 20, t: 20 });
 
-  useLayoutEffect(() => {
-    if (!desktopRef.current) return;
+  const getMinDims = () => isMobile ? {width: window.innerWidth, height: window.innerHeight} : {width: 850, height: 600};
+  const getMaxDims = () => ({width: window.innerWidth, height: window.innerHeight});
 
-    const observer = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        setMaxDims({
-          width: entry.contentRect.width,
-          height: entry.contentRect.height
-        });
-      }
-    });
+  const updateDims = () => {
+    if(isMobile) {
+      width.set(minDims.width);
+      height.set(minDims.height);
+      left.set(0);
+      top.set(0);
+    }
+  }
 
-    observer.observe(desktopRef.current);
-    return () => observer.disconnect();
-  }, [isMaximized, ]);
-
+  // To make sure that if someone is testing mobile compatability, all values are updated properly without requiring a reload
   useEffect(() => {
+    setMinDims(getMinDims);
+    setMaxDims(getMaxDims);
+    updateDims();
+  }, [isMobile, isOpen])
+
+  // Set the initial window positions
+  useEffect(() => {
+    if(!isOpen) return;
+
+    // When we initially maximize, we keep track of where the window was so that un-maximizing or whatever will keep the window position
     if (isMaximized) {
       posMem.current = {
         w: width.get(),
@@ -74,6 +84,7 @@ export function Window({
       width.set(maxDims.width)
       height.set(maxDims.height)
     } else {
+      console.log()
       left.set(posMem.current.l)
       height.set(posMem.current.h)
       top.set(posMem.current.t)
@@ -81,11 +92,10 @@ export function Window({
     }
   }, [isMaximized])
 
-  // Set the initial window positions
   if (!isOpen) return null;
 
   const handlePanStart = () => {
-    if(isMaximized) return;
+    if(isMaximized || isMobile) return;
     start.current = {
       w: width.get(),
       h: height.get(),
@@ -95,12 +105,12 @@ export function Window({
   };
 
   const setWindow = function (l = 0, r = 0, t = 0, b = 0) {
-    if(isMaximized) return;
+    if(isMaximized || isMobile) return;
     const target_w = start.current.w - l + r;
     const target_h = start.current.h - t + b;
 
-    const new_w = Math.max(min_w, target_w);
-    const new_h = Math.max(min_h, target_h);
+    const new_w = Math.max(minDims.width, target_w);
+    const new_h = Math.max(minDims.height, target_h);
 
     const deficit_w = new_w - target_w; 
     const deficit_h = new_h - target_h;
@@ -136,89 +146,94 @@ export function Window({
       }}
       onPointerDownCapture={onFocus}
       className={`absolute flex flex-col border border-white/30 overflow-hidden will-change-transform ${
-        isMaximized 
-          ? 'top-0 w-full h-[calc(100vh-80px)] rounded-none bg-transparent'
+        isMaximized || isMobile 
+          ? `top-0 left-0 w-full h-[100dvh] md:h-[calc(100vh-80px)] rounded-none bg-transparent`
           : `top-20 max-w-[90vw] rounded-xl bg-transparent shadow-2xl`
       }`}
     >
-      {/* Right Edge */}
-      <motion.div className="absolute right-0 top-0 bottom-0 w-2 cursor-e-resize z-50 select-none"
-        onPan={(_e, info) => {
-          setWindow(0, info.offset.x, 0, 0)
-        }}
-        onPanStart={() => {
-          handlePanStart()
-        }}
-      />
-      {/* Bottom Edge */}
-      <motion.div className="absolute bottom-0 left-0 right-0 h-2 cursor-s-resize z-50 select-none"
-        onPan={(_, info) => {
-          setWindow(0, 0, 0, info.offset.y)
-        }}
-        onPanStart={() => {
-          handlePanStart()
-        }}
-      />
-      {/* Bottom-Right Corner */}
-      <motion.div className="absolute right-0 bottom-0 w-4 h-4 cursor-se-resize z-50 select-none"
-        onPan={(_, info) => {
-          setWindow(0, info.offset.x, 0, info.offset.y)
-        }}
-        onPanStart={() => {
-          handlePanStart()
-        }}
-      />
-      {/* Left Edge */}
-      <motion.div className='absolute left-0 top-0 bottom-0 w-2 cursor-e-resize z-50 select-none'
-        onPan={(_, info) => {
-          setWindow(info.offset.x, 0, 0, 0)
-        }}
-        onPanStart={() => {
-          handlePanStart()
-        }}
-      />
-      {/* Bottom-Left Corner */}
-      <motion.div className="absolute left-0 bottom-0 w-4 h-4 cursor-sw-resize z-50 select-none"
-        onPan={(_, info) => {
-          setWindow(info.offset.x, 0, 0, info.offset.y)
-        }}
-        onPanStart={() => {
-          handlePanStart()
-        }}
-      />
-      {/* Top Edge */}
-      <motion.div className="absolute top-0 left-0 right-0 h-2 cursor-s-resize z-50 select-none"
-        onPan={(_, info) => {
-          setWindow(0, 0, info.offset.y, 0)
-        }}
-        onPanStart={() => {
-          handlePanStart()
-        }}
-      />
-      {/* Top-Left Corner */}
-      <motion.div className="absolute left-0 top-0 w-4 h-4 cursor-se-resize z-50 select-none"
-        onPan={(_, info) => {
-          setWindow(info.offset.x, 0, info.offset.y, 0)
-        }}
-        onPanStart={() => {
-          handlePanStart()
-        }}
-      />
-      {/* Top-Right Corner */}
-      <motion.div className="absolute right-0 top-0 w-4 h-4 cursor-sw-resize z-50 select-none"
-        onPan={(_, info) => {
-          setWindow(0, info.offset.x, info.offset.y, 0)
-        }}
-        onPanStart={() => {
-          handlePanStart()
-        }}
-      />
+      {!isMobile && (
+        <>
+        {/* Do this lil tag above since the like TSX wrapper needs one parent element */}
+        {/* Right Edge */}
+        <motion.div className="absolute right-0 top-0 bottom-0 w-2 cursor-e-resize z-50 select-none"
+          onPan={(_e, info) => {
+            setWindow(0, info.offset.x, 0, 0)
+          }}
+          onPanStart={() => {
+            handlePanStart()
+          }}
+        />
+        {/* Bottom Edge */}
+        <motion.div className="absolute bottom-0 left-0 right-0 h-2 cursor-s-resize z-50 select-none"
+          onPan={(_, info) => {
+            setWindow(0, 0, 0, info.offset.y)
+          }}
+          onPanStart={() => {
+            handlePanStart()
+          }}
+        />
+        {/* Bottom-Right Corner */}
+        <motion.div className="absolute right-0 bottom-0 w-4 h-4 cursor-se-resize z-50 select-none"
+          onPan={(_, info) => {
+            setWindow(0, info.offset.x, 0, info.offset.y)
+          }}
+          onPanStart={() => {
+            handlePanStart()
+          }}
+        />
+        {/* Left Edge */}
+        <motion.div className='absolute left-0 top-0 bottom-0 w-2 cursor-e-resize z-50 select-none'
+          onPan={(_, info) => {
+            setWindow(info.offset.x, 0, 0, 0)
+          }}
+          onPanStart={() => {
+            handlePanStart()
+          }}
+        />
+        {/* Bottom-Left Corner */}
+        <motion.div className="absolute left-0 bottom-0 w-4 h-4 cursor-sw-resize z-50 select-none"
+          onPan={(_, info) => {
+            setWindow(info.offset.x, 0, 0, info.offset.y)
+          }}
+          onPanStart={() => {
+            handlePanStart()
+          }}
+        />
+        {/* Top Edge */}
+        <motion.div className="absolute top-0 left-0 right-0 h-2 cursor-s-resize z-50 select-none"
+          onPan={(_, info) => {
+            setWindow(0, 0, info.offset.y, 0)
+          }}
+          onPanStart={() => {
+            handlePanStart()
+          }}
+        />
+        {/* Top-Left Corner */}
+        <motion.div className="absolute left-0 top-0 w-4 h-4 cursor-se-resize z-50 select-none"
+          onPan={(_, info) => {
+            setWindow(info.offset.x, 0, info.offset.y, 0)
+          }}
+          onPanStart={() => {
+            handlePanStart()
+          }}
+        />
+        {/* Top-Right Corner */}
+        <motion.div className="absolute right-0 top-0 w-4 h-4 cursor-sw-resize z-50 select-none"
+          onPan={(_, info) => {
+            setWindow(0, info.offset.x, info.offset.y, 0)
+          }}
+          onPanStart={() => {
+            handlePanStart()
+          }}
+        />
+        </>
+      )}
       {/* Title bar for dragging when click/drag action happens inside */}
       {/* onPointerDownCapture used to stop event prop because motion.div bypasses react and executes events before bubbling back up fully, so we gotta stop it before bubbling starts */}
       <div 
         className="h-10 border-b border-white/20 flex items-center px-4 bg-white/40 select-none z-10 cursor-default backdrop-blur-sm"
         onPointerDown={(e) => {
-          if (!isMaximized) {
+          if (!isMaximized && !isMobile) {
              controls.start(e);
           }
         }}
@@ -228,24 +243,29 @@ export function Window({
           <button 
             onClick={onClose}
             onPointerDownCapture={(e) => e.stopPropagation()}
-            className="w-3.5 h-3.5 rounded-full bg-red-500 hover:bg-red-600 border border-black/10 flex items-center justify-center group"
+            className={`w-${isMobile ? 5 : 3.5} h-${isMobile ? 5 : 3.5} rounded-full bg-red-500 hover:bg-red-600 border border-black/10 flex items-center justify-center group`}
           >
-             <X className="w-2.5 h-2.5 opacity-0 group-hover:opacity-100 text-black/50" />
+             <X className={`w-${isMobile ? 4 : 2.5} h-${isMobile ? 4 : 2.5} ${isMobile ? "opacity-100" : "opacity-0 group-hover:opacity-100"} text-black/50`} />
           </button>
-          <button 
-            onClick={onMinimize}
-            onPointerDownCapture={(e) => e.stopPropagation()}
-            className="w-3.5 h-3.5 rounded-full bg-yellow-500 hover:bg-yellow-600 border border-black/10 flex items-center justify-center group"
-          >
-             <Minus className="w-2.5 h-2.5 opacity-0 group-hover:opacity-100 text-black/50" />
-          </button>
-          <button 
-            onClick={onMaximize}
-            onPointerDownCapture={(e) => e.stopPropagation()}
-            className="w-3.5 h-3.5 rounded-full bg-green-500 hover:bg-green-600 border border-black/10 flex items-center justify-center group"
-          >
-             <Square className="w-2 h-2 opacity-0 group-hover:opacity-100 text-black/50" />
-          </button>
+          {!isMobile && (
+            <>
+              <button 
+                onClick={onMinimize}
+                onPointerDownCapture={(e) => e.stopPropagation()}
+                className="w-3.5 h-3.5 rounded-full bg-yellow-500 hover:bg-yellow-600 border border-black/10 flex items-center justify-center group"
+              >
+                <Minus className="w-2.5 h-2.5 opacity-0 group-hover:opacity-100 text-black/50" />
+              </button>
+              <button 
+                onClick={onMaximize}
+                onPointerDownCapture={(e) => e.stopPropagation()}
+                className="w-3.5 h-3.5 rounded-full bg-green-500 hover:bg-green-600 border border-black/10 flex items-center justify-center group"
+              >
+                <Square className="w-2 h-2 opacity-0 group-hover:opacity-100 text-black/50" />
+              </button>
+            </>
+          )}
+          
         </div>
         
         {/* Title */}
@@ -259,9 +279,6 @@ export function Window({
       {/* Content Area */}
       <div 
         className="flex-1 overflow-hidden relative cursor-auto bg-white select-auto"
-        onPointerDownCapture={(e) => {
-          e.stopPropagation();
-        }}
       >
         {children}
       </div>

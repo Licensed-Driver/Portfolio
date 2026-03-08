@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import { Terminal as XTerm } from '@xterm/xterm';
 import { FitAddon } from '@xterm/addon-fit';
 import '@xterm/xterm/css/xterm.css';
+import { useIsMobile } from '../hooks/useIsMobile';
 
 export interface Command {
   description: string;
@@ -19,6 +20,7 @@ export function Terminal({
   const terminalRef = useRef<HTMLDivElement>(null);
   const xtermRef = useRef<XTerm | null>(null);
   const fitAddonRef = useRef<FitAddon | null>(null);
+  const isMobile = useIsMobile();
 
   const inputBuffer = useRef<string>("");
 
@@ -29,6 +31,7 @@ export function Terminal({
     const term = new XTerm({
       cursorBlink: true,
       fontFamily: 'monospace',
+      fontSize: isMobile ? 6 : 15,
       theme: {
         background: '#000000',
         foreground: '#4ade80',  // green-400 equivalent
@@ -51,7 +54,6 @@ export function Terminal({
     // Handle browser resize
     const handleResize = () => {
       fitAddon.fit();
-      console.log("Resizing...")
     };
     window.addEventListener('resize', handleResize);
 

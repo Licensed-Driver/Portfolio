@@ -34,7 +34,7 @@ export const DesktopBackground = React.memo(() => {
   return (
     <div className="absolute inset-0 z-0 flex flex-col items-center justify-center overflow-hidden pointer-events-none">
       {/* Map each skill to a bubble */}
-      <div className="absolute inset-0 z-0 flex items-center justify-center">
+      <div className="hidden md:flex absolute inset-0 z-0 items-center justify-center">
         {skills.map((skill, i) => {
           const goldenRatio = (1 + Math.sqrt(5)) / 2;
           // We use the golden ratio with a uniform spread so that the bubbles are nicely spread but not random
@@ -90,7 +90,7 @@ export const DesktopBackground = React.memo(() => {
             I'm a 3rd-year Computing Science student at the University of Alberta and the current VP of Administration for UACS. I just have a passion for computer science, love to code, and can never have enough fun solving problems.
           </p>
           <p className="text-base md:text-lg text-white/70 text-center font-medium leading-relaxed">
-            My work usually bounces between low-level systems architecture (like compiling the custom Buildroot Linux OS running on this site), shipping full-stack web applications, and building whatever caught my interest recently. When I step away from the keyboard, you can usually find me snowboarding around Edmonton, making new cocktail recipes, or taking care of my guinea pigs.
+            My work usually bounces between low-level systems architecture (like compiling the custom Buildroot Linux OS running on this site), shipping full-stack web applications, and building whatever's caught my interest recently. When I step away from the keyboard, you can usually find me snowboarding around Edmonton, making new cocktail recipes, or taking care of my guinea pigs.
           </p>
         </div>
       </div>

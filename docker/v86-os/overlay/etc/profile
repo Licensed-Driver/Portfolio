@@ -1,3 +1,4 @@
+cd /
 printf "\033c"
 
 cat << "ART"

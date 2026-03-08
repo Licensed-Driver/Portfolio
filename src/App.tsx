@@ -161,7 +161,7 @@ function App() {
   return (
     <div className="w-full h-screen overflow-hidden relative">
       {/* Top Menu Bar */}
-      <div className="fixed top-0 left-0 right-0 z-[1000] h-3 group">
+      <div className="fixed top-0 left-0 right-0 z-[1000] h-3 group hidden md:block">
         <div className="
           absolute top-0 left-0 w-full h-[3dvh] min-h-[28px] bg-white/10 backdrop-blur-md border-b border-white/20 px-4 
           flex items-center shadow-sm text-xs font-medium text-white shadow-black/10 
@@ -190,8 +190,7 @@ function App() {
         <DesktopBackground />
 
         {/* Desktop Area */}
-        <div className="p-4 w-full h-full relative z-10"
-        >
+        <div className="p-4 pt-12 md:pt-4 w-full h-full relative z-10 grid grid-cols-4 content-start gap-2 md:flex md:flex-col md:gap-2 sm:flex sm:flex-row">
           {desktopItems.map(item => (
             <DesktopItem 
               key={item.id}
