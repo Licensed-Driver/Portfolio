@@ -2,6 +2,7 @@ import type { Project } from '../types';
 import courseLinkReadme from './readmes/course-link-readme.md?raw';
 import psrsReadme from './readmes/psrs-readme.md?raw';
 import uacsWebsiteReadme from './readmes/uacs-website-readme.md?raw';
+import openBendReadme from './readmes/open-bend-readme.md?raw';
 
 export const projects: Project[] = [
   {
@@ -28,5 +29,13 @@ export const projects: Project[] = [
     technologies: ['TypeScript', 'React', 'Vite', 'Radix UI'],
     link: 'https://uacs.ca',
     readme: uacsWebsiteReadme
+  },
+  {
+    id: 'open-bend',
+    title: 'OpenBend',
+    description: '',
+    technologies: ['C++', 'JUCE', 'Pamplejuce', 'CMake'],
+    readme: openBendReadme,
+    github: 'https://github.com/Licensed-Driver/OpenBend'
   }
 ];
