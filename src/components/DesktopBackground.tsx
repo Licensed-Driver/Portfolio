@@ -1,6 +1,5 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { User } from 'lucide-react';
 
 const skills = [
   // Languages
@@ -79,7 +78,7 @@ export const DesktopBackground = React.memo(() => {
       {/* Now the regular-shmegular content */}
       <div className="relative z-0 flex flex-col items-center pointer-events-none w-full max-w-4xl mx-auto px-4 mix-blend-overlay">
         <div className="w-24 h-24 bg-white/30 rounded-full mb-4 flex items-center justify-center border-4 border-white/10 overflow-hidden pointer-events-auto mt-4 backdrop-blur-sm">
-          <User className="w-12 h-12 text-white/50" />
+          <img src="/images/IMG_5335.jpg" alt="Profile" className="w-full h-full object-cover" />
         </div>
         
         <h1 className="text-2xl md:text-3xl font-extrabold text-white/70 mb-1 tracking-wide text-center">Layne Pitman</h1>

@@ -24,7 +24,7 @@ function App() {
     { id: 'projects', title: 'Projects', isOpen: false, isMinimized: false, isMaximized: false, zIndex: 10 },
     { id: 'terminal', title: 'Terminal', isOpen: false, isMinimized: false, isMaximized: false, zIndex: 10 },
     { id: 'github', title: 'GitHub', isOpen: false, isMinimized: false, isMaximized: false, zIndex: 10},
-    { id: 'course-link', title: 'CourseLink', isOpen: false, isMinimized: false, isMaximized: false, zIndex: 10},
+    { id: 'course-link', title: 'Gradeship', isOpen: false, isMinimized: false, isMaximized: false, zIndex: 10},
   ]);
 
   const [activeZIndex, setActiveZIndex] = useState(10);
@@ -138,7 +138,7 @@ function App() {
         onClose={() => closeWindow(id)}
       />;
       case 'github': return <GitHubApp />;
-      case 'course-link': return <WebPage url={'https://courselink.ca'} title={"CourseLink"} />;
+      case 'course-link': return <WebPage url={'https://app.gradeship.ca'} title={"Gradeship"} />;
       default: null;
     }
   };
@@ -155,7 +155,7 @@ function App() {
     { id: 'projects', label: 'Projects', icon: <Folder className="text-white fill-blue-200/50" size={24} />, windowId: 'projects', openByDefault: true, isOpen:false },
     { id: 'terminal', label: 'Terminal', icon: <TerminalIcon className="text-white" size={24} />, windowId: 'terminal', openByDefault: true, isOpen:false },
     { id: 'github', label: 'GitHub', icon: <Github className="text-white" size={24} />, windowId: 'github', openByDefault: true, isOpen:false },
-    { id: 'course-link', label: 'CourseLink', icon: <ExternalLink className="text-black" size={24} />, windowId: 'course-link', openByDefault: false, isOpen:false }
+    { id: 'course-link', label: 'Gradeship', icon: <ExternalLink className="text-black" size={24} />, windowId: 'course-link', openByDefault: false, isOpen:false }
   ];
 
   return (

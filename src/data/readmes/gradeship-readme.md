@@ -1,12 +1,12 @@
-# CourseLink
+# Gradeship
 
-**CourseLink** is a comprehensive platform designed to seamlessly connect university students with ideal study partners. By matching students based on their current courses, study goals, and academic preferences, CourseLink bridges the gap between students and facilitates academic collaboration and social connection on campus.
+**Gradeship** is a platform designed to connect university students with ideal study partners. By matching students based on their current courses, study goals, and academic preferences, Gradeship bridges the social gap between students and helps to facilitate collaboration and social connection on campus.
 
-## 🎯 The Vision
+## The Vision
 
-Studying in university can be difficult, especially when you learn best with others, and need to find classmates who share similar academic goals, schedules, and learning styles. CourseLink is designed to solve this by offering a centralized, intelligent matching platform where students can discover, connect, and collaborate with classmates.
+Studying in university can be difficult, especially when you learn best with others, and need to find classmates who share similar academic goals, schedules, and learning styles. Gradeship is designed to solve this by offering a centralized, intelligent matching platform where students can discover, connect, and collaborate with classmates.
 
-## 🌟 Key Features
+## Key Features
 
 - **Intelligent Matching Engine**: A custom symmetric similarity algorithm that computes detailed match scores based on overlapping courses, goals (e.g., exam prep, homework), and categorical preferences (e.g., interactivity levels, meeting types).
 - **User-First Discovery**: A familiar and intuitive interface designed with common systems in mind to help users focus on finding the right study partner, not fighting with UI.
@@ -14,9 +14,9 @@ Studying in university can be difficult, especially when you learn best with oth
 - **Comprehensive Onboarding**: A smooth user signup to introduce the user to the systems and capture their study preferences, current course enrollments, and academic habits.
 - **Integrated Scheduling**: A calendar built right into the app to integrate seemlessly with scheduling sessions right in the messages. One platform for all study sessions.
 
-## 🏗️ Project Architecture & Tech Stack
+## Project Architecture & Tech Stack
 
-CourseLink is structured as a monorepo containing three core components and underlying cloud infrastructure:
+Gradeship is structured as a monorepo containing three core components and underlying cloud infrastructure:
 
 ### 1. Main Web Application (`frontend/`)
 The core application where users manage profiles, discover partners, and communicate.
@@ -44,6 +44,9 @@ Fully serverless and scalable infrastructure leveraging Google Cloud and Firebas
 - **Hosting**: Firebase Hosting mapping different targets to the monolithic frontend and landing applications.
 - **Deployment Pipeline**: CI/CD workflows via GitHub Actions automating build workflows and deployment processes directly to Firebase upon merges.
 
-## 🔒 Confidentiality & Security
+## Confidentiality & Security
 
 Maintaining user privacy and data security is the absolute priority, bar-none. The platform uses strict database security rules ensuring that users can only access their own data and authorized conversation threads. We assume any request is a malicious actor first, only allowing them after proper vetting and strict data compliance.
+
+Copyright © 2026 Layne Pitman. All Rights Reserved.
+Unauthorized copying or modification of this file is strictly prohibited.
