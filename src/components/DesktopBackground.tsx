@@ -66,7 +66,7 @@ export const DesktopBackground = React.memo(() => {
   );
 
   return (
-    <div className="absolute inset-0 z-0 flex flex-col items-center justify-center overflow-hidden pointer-events-none">
+    <div ref={containerRef} className="absolute inset-0 z-0 flex flex-col items-center justify-center overflow-hidden pointer-events-none">
       {/* Map each skill to a bubble */}
       <div className="hidden md:flex absolute inset-0 z-0 items-center justify-center">
         {skills.map((skill, i) => {
